@@ -1,0 +1,107 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores user information and role",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "role": { "type": "string", "enum": ["client", "cleaner", "operator"] },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "telegramId": { "type": "string" },
+        "address": { "type": "string" },
+        "phone": { "type": "string" },
+        "rating": { "type": "number" },
+        "isOnline": { "type": "boolean" },
+        "skills": { "type": "array", "items": { "type": "string" } },
+        "limitations": { "type": "array", "items": { "type": "string" } },
+        "schedule": { "type": "object" },
+        "properties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "address": { "type": "string" },
+              "description": { "type": "string" },
+              "photos": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "balance": { "type": "number" }
+      },
+      "required": ["uid", "role", "displayName"]
+    },
+    "PayoutRequest": {
+      "title": "Payout Request",
+      "description": "Request for balance withdrawal",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "cleanerId": { "type": "string" },
+        "amount": { "type": "number" },
+        "cardNumber": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "completed", "rejected"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["cleanerId", "amount", "cardNumber", "status", "createdAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Stores service request information",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "clientId": { "type": "string" },
+        "cleanerId": { "type": "string" },
+        "type": { "type": "string", "enum": ["cleaning", "help"] },
+        "tasks": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["created", "searching", "in_dialog", "awaiting_payment", "paid", "completed", "cancelled"] },
+        "dateTime": { "type": "string" },
+        "isAsap": { "type": "boolean" },
+        "price": { "type": "number" },
+        "address": { "type": "string" },
+        "commission": { "type": "number" },
+        "payout": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["clientId", "type", "status", "dateTime", "price", "address"]
+    },
+    "Chat": {
+      "title": "Chat",
+      "description": "Stores chat session information",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "orderId": { "type": "string" },
+        "participants": { "type": "array", "items": { "type": "string" } },
+        "lastMessage": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["orderId", "participants"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Stores individual chat messages",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "chatId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["chatId", "senderId", "text", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": { "schema": "UserProfile", "description": "User profiles" },
+    "/orders/{orderId}": { "schema": "Order", "description": "Service orders" },
+    "/chats/{chatId}": { "schema": "Chat", "description": "Chat sessions" },
+    "/chats/{chatId}/messages/{messageId}": { "schema": "Message", "description": "Chat messages" },
+    "/payoutRequests/{requestId}": { "schema": "PayoutRequest", "description": "Withdrawal requests" }
+  }
+}
